@@ -33,6 +33,12 @@
 #include "progressreporter.h"
 #include "camera.h"
 #include "intersection.h"
+#include <iostream>
+#include <fstream>
+#include <iomanip> 
+
+using namespace std;
+
 
 static uint32_t hash(char *key, uint32_t len)
 {
@@ -50,6 +56,7 @@ static uint32_t hash(char *key, uint32_t len)
 
 // SamplerRendererTask Definitions
 void SamplerRendererTask::Run() {
+	
     PBRT_STARTED_RENDERTASK(taskNum);
     // Get sub-_Sampler_ for _SamplerRendererTask_
     Sampler *sampler = mainSampler->GetSubSampler(taskNum, taskCount);
@@ -72,6 +79,15 @@ void SamplerRendererTask::Run() {
     Spectrum *Ts = new Spectrum[maxSamples];
     Intersection *isects = new Intersection[maxSamples];
 
+	FILE * lightfieldBin;
+	ofstream lightfield;
+
+	// if (preprocess) {
+	// 	// Create lightfield file
+	// 	lightfieldBin = fopen("lightfield.bin", "a");
+	//   	lightfield.open("lightfield.txt", ios::out | ios::app );
+	// } 
+
     // Get samples from _Sampler_ and update image
     int sampleCount;
     while ((sampleCount = sampler->GetMoreSamples(samples, rng)) > 0) {
@@ -79,33 +95,97 @@ void SamplerRendererTask::Run() {
         for (int i = 0; i < sampleCount; ++i) {
             // Find camera ray for _sample[i]_
             PBRT_STARTED_GENERATING_CAMERA_RAY(&samples[i]);
-            float rayWeight = camera->GenerateRayDifferential(samples[i], &rays[i]);
+			float rayWeight = camera->GenerateRayDifferential(samples[i], &rays[i]);
             rays[i].ScaleDifferentials(1.f / sqrtf(sampler->samplesPerPixel));
             PBRT_FINISHED_GENERATING_CAMERA_RAY(&samples[i], &rays[i], rayWeight);
 
-            // Evaluate radiance along camera ray
-            PBRT_STARTED_CAMERA_RAY_INTEGRATION(&rays[i], &samples[i]);
-            if (visualizeObjectIds) {
-                if (rayWeight > 0.f && scene->Intersect(rays[i], &isects[i])) {
-                    // random shading based on shape id...
-                    uint32_t ids[2] = { isects[i].shapeId, isects[i].primitiveId };
-                    uint32_t h = hash((char *)ids, sizeof(ids));
-                    float rgb[3] = { (h & 0xff), (h >> 8) & 0xff, (h >> 16) & 0xff };
-                    Ls[i] = Spectrum::FromRGB(rgb);
-                    Ls[i] /= 255.f;
-                }
-                else
-                    Ls[i] = 0.f;
-            }
-            else {
-            if (rayWeight > 0.f)
-                Ls[i] = rayWeight * renderer->Li(scene, rays[i], &samples[i], rng,
-                                                 arena, &isects[i], &Ts[i]);
-            else {
-                Ls[i] = 0.f;
-                Ts[i] = 1.f;
-            }
+			Ray* cameraRay = new Ray();
+			camera->GenerateCameraRay(samples[i], cameraRay);
 
+			if (preprocess) {
+
+            	// Evaluate radiance along camera ray
+	            PBRT_STARTED_CAMERA_RAY_INTEGRATION(&rays[i], &samples[i]);
+	            if (visualizeObjectIds) {
+	                if (rayWeight > 0.f && scene->Intersect(rays[i], &isects[i])) {
+	                    // random shading based on shape id...
+	                    uint32_t ids[2] = { isects[i].shapeId, isects[i].primitiveId };
+	                    uint32_t h = hash((char *)ids, sizeof(ids));
+	                    float rgb[3] = { (h & 0xff), (h >> 8) & 0xff, (h >> 16) & 0xff };
+	                    Ls[i] = Spectrum::FromRGB(rgb);
+	                    Ls[i] /= 255.f;
+						camera->lightfield->AddRayToField(*cameraRay, rgb);
+
+	                }
+	                else
+	                    Ls[i] = 0.f;
+	            }
+	            else {
+	            	if (rayWeight > 0.f) 
+		                Ls[i] = rayWeight * renderer->Li(scene, rays[i], &samples[i], rng,
+		                                                 arena, &isects[i], &Ts[i]);
+		            else {
+		                Ls[i] = 0.f;
+		                Ts[i] = 1.f;
+		            }
+				}
+				
+				/*
+				short x = (short)(samples[i].imageX);
+				short y = (short)(samples[i].imageY);                                                                                                                                                                                                             
+				short u = (short)(samples[i].lensU * 256);
+				short v = (short)(samples[i].lensV * 256);
+				short r = (short)(Ls[i].GetCoeff(0) * 256);
+				short g = (short)(Ls[i].GetCoeff(1) * 256);
+				short b = (short)(Ls[i].GetCoeff(2) * 256);
+				fwrite((void*)(&x), sizeof(x), 1, lightfieldBin);
+				fwrite((void*)(&y), sizeof(y), 1, lightfieldBin);
+				fwrite((void*)(&u), sizeof(u), 1, lightfieldBin);
+				fwrite((void*)(&v), sizeof(v), 1, lightfieldBin);
+				lightfield << x << "\t" << y << "\t" << u << "\t" << v;
+				if (r > 0 && g > 0 && b > 0) {
+					fwrite((void*)(&r), sizeof(r), 1, lightfieldBin);
+					fwrite((void*)(&g), sizeof(g), 1, lightfieldBin);
+					fwrite((void*)(&b), sizeof(b), 1, lightfieldBin);
+					lightfield << "\t" << r << "\t" << g << "\t" << b;
+				}
+				lightfield << endl;
+				*/
+			} else {
+				/*
+				float rgb[3];
+				rgb[0] = 0.f;
+				rgb[1] = 0.f;
+				rgb[2] = 1.f;
+				Ls[i] = Spectrum::FromRGB(rgb);
+				string line;
+			  	ifstream lightfield("lightfield.txt");
+		  		if (lightfield.is_open()) {
+				   while (lightfield.good()) {
+				      	getline (lightfield,line);
+					  	char * pch;
+						float rgb[3];
+						rgb[0] = 0.f;
+						rgb[1] = 0.f;
+						rgb[2] = 0.f;
+						// pch = strtok((char *)line.c_str(), ",");
+						// rgb[0] = atof(pch);
+						// for (int j = 1; j < 3; j++) {
+						// 	pch = strtok(NULL, ",");
+						// 	rgb[j] = atof(pch);
+						// }
+						Ls[i] = Spectrum::FromRGB(rgb);
+				    }
+				    lightfield.close();
+				}
+				*/
+				float* rgb = new float[3];
+				if (!camera->lightfield->Intersect(*cameraRay, rgb))
+					rgb[0] = rgb[1] = rgb[2] = 0.f;
+	            Ls[i] = Spectrum::FromRGB(rgb);
+	            Ls[i] /= 255.f;
+			}
+			
             // Issue warning if unexpected radiance value returned
             if (Ls[i].HasNaNs()) {
                 Error("Not-a-number radiance value returned "
@@ -121,7 +201,6 @@ void SamplerRendererTask::Run() {
                 Error("Infinite luminance value returned"
                       "for image sample.  Setting to black.");
                 Ls[i] = Spectrum(0.f);
-            }
             }
             PBRT_FINISHED_CAMERA_RAY_INTEGRATION(&rays[i], &samples[i], &Ls[i]);
         }
@@ -140,6 +219,11 @@ void SamplerRendererTask::Run() {
         // Free _MemoryArena_ memory from computing image sample values
         arena.FreeAll();
     }
+	
+	// if (preprocess) {
+	// 	fclose(lightfieldBin);
+	// 	lightfield.close();
+	// }
 
     // Clean up after _SamplerRendererTask_ is done with its image region
     camera->film->UpdateDisplay(sampler->xPixelStart,
@@ -195,17 +279,30 @@ void SamplerRenderer::Render(const Scene *scene) {
     int nTasks = max(32 * NumSystemCores(), nPixels / (16*16));
     nTasks = RoundUpPow2(nTasks);
     ProgressReporter reporter(nTasks, "Rendering");
-    vector<Task *> renderTasks;
+
+    vector<Task *> preprocessTasks;
+    for (int i = 0; i < nTasks; ++i)
+        preprocessTasks.push_back(new SamplerRendererTask(scene, this, camera,
+                                                      	  reporter, sampler, sample, 
+                                                      	  visualizeObjectIds, 
+                                                      	  nTasks-1-i, nTasks, true));
+    EnqueueTasks(preprocessTasks);
+    WaitForAllTasks();
+    for (uint32_t i = 0; i < preprocessTasks.size(); ++i)
+        delete preprocessTasks[i];
+    reporter.Done();
+
+	vector<Task *> renderTasks;
     for (int i = 0; i < nTasks; ++i)
         renderTasks.push_back(new SamplerRendererTask(scene, this, camera,
                                                       reporter, sampler, sample, 
                                                       visualizeObjectIds, 
-                                                      nTasks-1-i, nTasks));
+                                                      nTasks-1-i, nTasks, false));
     EnqueueTasks(renderTasks);
     WaitForAllTasks();
     for (uint32_t i = 0; i < renderTasks.size(); ++i)
         delete renderTasks[i];
-    reporter.Done();
+
     PBRT_FINISHED_RENDERING();
     // Clean up after rendering and store final image
     delete sample;

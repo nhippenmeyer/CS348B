@@ -40,6 +40,7 @@ public:
     OrthoCamera(const AnimatedTransform &cam2world, const float screenWindow[4],
         float sopen, float sclose, float lensr, float focald, Film *film);
     float GenerateRay(const CameraSample &sample, Ray *) const;
+	void GenerateCameraRay(const CameraSample &sample, Ray *ray) const;
     float GenerateRayDifferential(const CameraSample &sample, RayDifferential *) const;
 private:
     // OrthoCamera Private Data

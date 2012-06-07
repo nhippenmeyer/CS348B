@@ -79,4 +79,5 @@ EnvironmentCamera *CreateEnvironmentCamera(const ParamSet &params,
     return new EnvironmentCamera(cam2world, shutteropen, shutterclose, film);
 }
 
+void EnvironmentCamera::GenerateCameraRay(const CameraSample &sample, Ray *ray) const {}
 

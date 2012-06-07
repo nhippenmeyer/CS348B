@@ -145,3 +145,5 @@ PerspectiveCamera *CreatePerspectiveCamera(const ParamSet &params,
     return new PerspectiveCamera(cam2world, screen, shutteropen,
         shutterclose, lensradius, focaldistance, fov, film);
 }
+
+void PerspectiveCamera::GenerateCameraRay(const CameraSample &sample, Ray *ray) const {}

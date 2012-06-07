@@ -63,11 +63,12 @@ public:
     // SamplerRendererTask Public Methods
     SamplerRendererTask(const Scene *sc, Renderer *ren, Camera *c,
                         ProgressReporter &pr, Sampler *ms, Sample *sam, 
-                        bool visIds, int tn, int tc)
+                        bool visIds, int tn, int tc, bool pp)
       : reporter(pr)
     {
         scene = sc; renderer = ren; camera = c; mainSampler = ms;
         origSample = sam; visualizeObjectIds = visIds; taskNum = tn; taskCount = tc;
+		preprocess = pp;
     }
     void Run();
 private:
@@ -80,6 +81,7 @@ private:
     Sample *origSample;
     bool visualizeObjectIds;
     int taskNum, taskCount;
+	bool preprocess;
 };
 
 

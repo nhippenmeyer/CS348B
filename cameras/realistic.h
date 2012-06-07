@@ -33,7 +33,8 @@ public:
       float filmdiag,
 	  Film *film);
 	~RealisticCamera();
-	float GenerateRay(const CameraSample &sample, Ray *) const;
+	float GenerateRay(const CameraSample &sample, Ray *ray) const;
+	void GenerateCameraRay(const CameraSample &sample, Ray *ray) const;
 
 private:
 	float ShutterOpen;

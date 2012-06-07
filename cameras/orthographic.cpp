@@ -140,4 +140,7 @@ OrthoCamera *CreateOrthographicCamera(const ParamSet &params,
         lensradius, focaldistance, film);
 }
 
+void OrthoCamera::GenerateCameraRay(const CameraSample &sample, Ray *ray) const {}
+
+
 

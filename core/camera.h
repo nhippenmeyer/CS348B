@@ -32,6 +32,7 @@
 #include "pbrt.h"
 #include "geometry.h"
 #include "transform.h"
+#include "cameras/lightfield.h"
 
 // Camera Declarations
 class Camera {
@@ -42,12 +43,16 @@ public:
     virtual ~Camera();
     virtual float GenerateRay(const CameraSample &sample,
                               Ray *ray) const = 0;
+    virtual void GenerateCameraRay(const CameraSample &sample,
+		Ray *ray) const = 0;
     virtual float GenerateRayDifferential(const CameraSample &sample, RayDifferential *rd) const;
 
     // Camera Public Data
     AnimatedTransform CameraToWorld;
     const float shutterOpen, shutterClose;
     Film *film;
+	LightField* lightfield;
+
 };
 
 

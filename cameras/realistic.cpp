@@ -162,6 +162,7 @@ RealisticCamera::RealisticCamera(const AnimatedTransform &cam2world,
 	string line;
 	float distance = 0.f;
 	float n_t = 1.f;
+	float backLensAperture = 0;
 	
 	// Build lens vector
 	while(getline(file, line))
@@ -182,14 +183,23 @@ RealisticCamera::RealisticCamera(const AnimatedTransform &cam2world,
 		LensInterface *lens = new LensInterface(c2o, radius, n_i, n_t, aperture);
 		lenses.push_back(lens);
 		distance += thickness;
+		backLensAperture = aperture;
 		n_t = n_i;
 	}
 	
 	// Set attributes
+	float backLensZ = distance;
 	distance += filmdistance;
 	filmZ = -distance;
 	filmDist = filmdistance;
 	filmDiag = filmdiag;
+	
+	float scale = filmDiag/sqrt(pow(film->xResolution,2) + pow(film->yResolution,2));
+	float widthClose = scale*film->xResolution;
+	float heightClose = scale*film->yResolution;
+	
+	lightfield = new LightField(filmZ, widthClose, heightClose, 32, 32,
+								backLensZ, backLensAperture, backLensAperture, 32, 32);
 }
 
 
@@ -237,3 +247,24 @@ float RealisticCamera::GenerateRay(const CameraSample &sample, Ray *ray) const
 	float A = M_PI*pow(lenses[lenses.size()-1]->Aperture()/2.f, 2);
 	return A*pow(Dot(Normalize(Pp - P), Vector(0.f, 0.f, 1.f)), 4) / pow(filmDist, 2);
 }
+
+void RealisticCamera::GenerateCameraRay(const CameraSample &sample, Ray *ray) const
+{
+	// Sample film plane
+	float scale = filmDiag/sqrt(pow(film->xResolution,2) + pow(film->yResolution,2));
+	float x = film->xResolution*scale/2 - sample.imageX*scale;
+	float y = sample.imageY*scale - film->yResolution*scale/2;
+	Point P = Point(x, y, filmZ);
+	
+	// Sample back lens for ray direction
+	float xp = 2*sample.lensU - 1;
+	float yp = 2*sample.lensV - 1;
+	float theta = xp/yp;
+	float r = yp * lenses[lenses.size()-1]->Aperture()/2.f;
+	Point Pp = Point(0.f, 0.f, filmZ+filmDist) + r*Vector(cos(theta), sin(theta), 0.f);
+
+	// Generate ray
+	*ray = Ray(P, Normalize(Pp - P), 0.f);
+	//DebugRay(*ray);
+}
+

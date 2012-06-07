@@ -41,6 +41,7 @@ public:
         : Camera(cam2world, sopen, sclose, film) {
     }
     float GenerateRay(const CameraSample &sample, Ray *) const;
+	void GenerateCameraRay(const CameraSample &sample, Ray *ray) const;
 };
 
 

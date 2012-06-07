@@ -1,4 +1,3 @@
-
 /*
     pbrt source code Copyright(c) 1998-2010 Matt Pharr and Greg Humphreys.
 
@@ -241,6 +240,7 @@ public:
             if (fscanf(f, "%f ", &c[i]) != 1) return false;
         return true;
     }
+	float GetCoeff(int i) {return c[i];}
 protected:
     // CoefficientSpectrum Protected Data
     float c[nSamples];
