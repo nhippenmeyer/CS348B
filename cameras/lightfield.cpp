@@ -35,13 +35,7 @@ bool Plane::Intersect(Ray& ray, int* coords) {
 	return false;
 }
 
-UVPlane::UVPlane(float z, float width, float height, int xRes, int yRes) : Plane(z, width, height, xRes, yRes) {
-	
-	stInd = new int[xRes*yRes];
-	for (int i = 0; i < xRes*yRes; i++) {
-		stInd[i] = 0;
-	}
-}
+UVPlane::UVPlane(float z, float width, float height, int xRes, int yRes) : Plane(z, width, height, xRes, yRes) {}
 
 STPlane::STPlane(float z, float width, float height, int xRes, int yRes) : Plane(z, width, height, xRes, yRes) {
 	
@@ -73,7 +67,7 @@ bool LightField::Intersect(Ray& ray, float* rgb) {
 	int uvCoords[2];
 	if (uvPlane->Intersect(ray, uvCoords)) {
 		int stCoords[2];
-		STPlane *stPlane = stPlanes[uvPlane->stInd[uvCoords[0] + uvPlane->xRes*uvCoords[1]]];
+		STPlane *stPlane = stPlanes[uvCoords[0] + uvPlane->xRes*uvCoords[1]];
 		if (stPlane->Intersect(ray, stCoords)) {
 			rgb[0] = stPlane->r[stCoords[0]][stCoords[1]];
 			rgb[1] = stPlane->g[stCoords[0]][stCoords[1]];
@@ -89,11 +83,11 @@ void LightField::AddRayToField(Ray& ray, float* rgb) {
 	int uvCoords[2];
 	if (uvPlane->Intersect(ray, uvCoords)) {
 		int stCoords[2];
-		STPlane *stPlane = stPlanes[uvPlane->stInd[uvCoords[0] + uvPlane->xRes*uvCoords[1]]];
+		STPlane *stPlane = stPlanes[uvCoords[0] + uvPlane->xRes*uvCoords[1]];
 		if (stPlane->Intersect(ray, stCoords)) {
-			stPlane->r[stCoords[0]][stCoords[1]] = rgb[0];
-			stPlane->g[stCoords[0]][stCoords[1]] = rgb[1];
-			stPlane->b[stCoords[0]][stCoords[1]] = rgb[2];
+			stPlane->r[stCoords[0]][stCoords[1]] += rgb[0];
+			stPlane->g[stCoords[0]][stCoords[1]] += rgb[1];
+			stPlane->b[stCoords[0]][stCoords[1]] += rgb[2];
 		}
 	}
 }

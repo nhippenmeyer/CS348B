@@ -11,7 +11,6 @@ public:
 class UVPlane : public Plane {
 public:
 	UVPlane(float z, float width, float height, int xRes, int yRes);
-	int *stInd;
 };
 
 class STPlane : public Plane {

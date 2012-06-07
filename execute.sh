@@ -3,5 +3,5 @@
 rm lightfield.txt
 rm lightfield.bin
 rm objs/libpbrt.a; make
-time pbrt ../../../hw3/hw3_bunnies.pbrt
+pbrt ../../../hw3/hw3_bunnies.pbrt --ncores 1
 exrtotiff hw3_bunnies.exr hw3_bunnies.tiff
