@@ -35,7 +35,13 @@ bool Plane::Intersect(Ray& ray, int* coords) {
 	return false;
 }
 
-UVPlane::UVPlane(float z, float width, float height, int xRes, int yRes) : Plane(z, width, height, xRes, yRes) {}
+UVPlane::UVPlane(float z, float width, float height, int xRes, int yRes) : Plane(z, width, height, xRes, yRes) {
+	
+	stInd = new int[xRes*yRes];
+	for (int i = 0; i < xRes*yRes; i++) {
+		stInd[i] = 0;
+	}
+}
 
 STPlane::STPlane(float z, float width, float height, int xRes, int yRes) : Plane(z, width, height, xRes, yRes) {
 	
@@ -67,11 +73,11 @@ bool LightField::Intersect(Ray& ray, float* rgb) {
 	int uvCoords[2];
 	if (uvPlane->Intersect(ray, uvCoords)) {
 		int stCoords[2];
-		STPlane *stPlane = stPlanes[uvCoords[0] + uvPlane->xRes*uvCoords[1]];
+		STPlane *stPlane = stPlanes[uvPlane->stInd[uvCoords[0] + uvPlane->xRes*uvCoords[1]]];
 		if (stPlane->Intersect(ray, stCoords)) {
-			rgb[0] = stPlane->r[stCoords[0]][stCoords[1]] * 5;
-			rgb[1] = stPlane->g[stCoords[0]][stCoords[1]] * 5;
-			rgb[2] = stPlane->b[stCoords[0]][stCoords[1]] * 5;
+			rgb[0] = stPlane->r[stCoords[0]][stCoords[1]];
+			rgb[1] = stPlane->g[stCoords[0]][stCoords[1]];
+			rgb[2] = stPlane->b[stCoords[0]][stCoords[1]];
 			return true;
 		}
 	}
@@ -83,7 +89,7 @@ void LightField::AddRayToField(Ray& ray, float* rgb) {
 	int uvCoords[2];
 	if (uvPlane->Intersect(ray, uvCoords)) {
 		int stCoords[2];
-		STPlane *stPlane = stPlanes[uvCoords[0] + uvPlane->xRes*uvCoords[1]];
+		STPlane *stPlane = stPlanes[uvPlane->stInd[uvCoords[0] + uvPlane->xRes*uvCoords[1]]];
 		if (stPlane->Intersect(ray, stCoords)) {
 			stPlane->r[stCoords[0]][stCoords[1]] = rgb[0];
 			stPlane->g[stCoords[0]][stCoords[1]] = rgb[1];
@@ -115,14 +121,14 @@ bool LightField::writeToFile()
     fwrite((void*)(&uvPlane->yRes), sizeof(uvPlane->yRes), 1, lightfieldBin);
 
     //write ST plane properties
-    fwrite((void*)(&stPlanes[0]->z), sizeof(stPlanes[0]->z), 1, lightfieldBin);
-    fwrite((void*)(&stPlanes[0]->width), sizeof(stPlanes[0]->width), 1, lightfieldBin);
-    fwrite((void*)(&stPlanes[0]->height), sizeof(stPlanes[0]->height), 1, lightfieldBin);
-    fwrite((void*)(&stPlanes[0]->xRes), sizeof(stPlanes[0]->xRes), 1, lightfieldBin);
-    fwrite((void*)(&stPlanes[0]->yRes), sizeof(stPlanes[0]->yRes), 1, lightfieldBin);
+    fwrite((void*)(&stPlane[0]->z), sizeof(stPlane[0]->z), 1, lightfieldBin);
+    fwrite((void*)(&stPlane[0]->width), sizeof(stPlane[0]->width), 1, lightfieldBin);
+    fwrite((void*)(&stPlane[0]->height), sizeof(stPlane[0]->height), 1, lightfieldBin);
+    fwrite((void*)(&stPlane[0]->xRes), sizeof(stPlane[0]->xRes), 1, lightfieldBin);
+    fwrite((void*)(&stPlane[0]->yRes), sizeof(stPlane[0]->yRes), 1, lightfieldBin);
 
     //go through all st planes in raster order, then write these out to file
-    for (int i = 0; i < (uvPlane->xRes)*(uvPlane->yRes); i++)
+    for (int i = 0; i < (UVPlane->xRes)*(UVPlane->yRes); i++)
     {
         STPlane *stPlane = stPlanes[i];
         for (int ii = 0; ii < (stPlane->xRes); ii++)
