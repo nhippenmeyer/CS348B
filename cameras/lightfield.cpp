@@ -101,7 +101,7 @@ bool LightField::writeToFile()
 {
     // Create lightfield file
     FILE * lightfieldBin;
-	lightfieldBin = fopen("lightfield.bin", "a");
+	lightfieldBin = fopen("lightfield.bin", "w");
 	//lightfield.open("lightfield.txt", ios::out | ios::app );
     
 	//float z, width, height;
@@ -147,5 +147,51 @@ bool LightField::writeToFile()
 
 bool LightField::loadFromFile()
 {
+ // Create lightfield file
+    FILE * lightfieldBin;
+	lightfieldBin = fopen("lightfield.bin", "r");
+	//lightfield.open("lightfield.txt", ios::out | ios::app );
+    
+	//float z, width, height;
+	//int xRes, yRes;
 
+    //write UV plane properties
+    fread((void*)(&uvPlane->z), sizeof(uvPlane->z), 1, lightfieldBin);
+    fread((void*)(&uvPlane->width), sizeof(uvPlane->width), 1, lightfieldBin);
+    fread((void*)(&uvPlane->height), sizeof(uvPlane->height), 1, lightfieldBin);
+    fread((void*)(&uvPlane->xRes), sizeof(uvPlane->xRes), 1, lightfieldBin);
+    fread((void*)(&uvPlane->yRes), sizeof(uvPlane->yRes), 1, lightfieldBin);
+
+    //write ST plane properties
+    fread((void*)(&stPlanes[0]->z), sizeof(stPlanes[0]->z), 1, lightfieldBin);
+    fread((void*)(&stPlanes[0]->width), sizeof(stPlanes[0]->width), 1, lightfieldBin);
+    fread((void*)(&stPlanes[0]->height), sizeof(stPlanes[0]->height), 1, lightfieldBin);
+    fread((void*)(&stPlanes[0]->xRes), sizeof(stPlanes[0]->xRes), 1, lightfieldBin);
+    fread((void*)(&stPlanes[0]->yRes), sizeof(stPlanes[0]->yRes), 1, lightfieldBin);
+
+    //go through all st planes in raster order, then write these out to file
+    for (int i = 0; i < (uvPlane->xRes)*(uvPlane->yRes); i++)
+    {
+        STPlane *stPlane = stPlanes[i];
+        for (int ii = 0; ii < (stPlane->xRes); ii++)
+        {
+            for (int jj = 0; jj < (stPlane->yRes); jj++)
+            {
+                short r = 0;
+                short g = 0;
+                short b = 0;
+                //write current stPlane rgb values to file
+	            fread((void*)(&r), sizeof(r), 1, lightfieldBin);
+				fread((void*)(&g), sizeof(g), 1, lightfieldBin);
+				fread((void*)(&b), sizeof(b), 1, lightfieldBin);
+
+                stPlane->r[ii][jj] = r/255.0;
+                stPlane->g[ii][jj] = g/255.0;
+                stPlane->b[ii][jj] = b/255.0;
+            }
+        }
+    }
+    
+    fclose(lightfieldBin);
+    return true;
 }
