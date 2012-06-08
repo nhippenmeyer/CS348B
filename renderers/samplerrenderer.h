@@ -70,7 +70,9 @@ public:
         origSample = sam; visualizeObjectIds = visIds; taskNum = tn; taskCount = tc;
 		preprocess = pp;
     }
-    void Run();
+	void Run();
+    void Preprocess();
+	void Render();
 private:
     // SamplerRendererTask Private Data
     const Scene *scene;
