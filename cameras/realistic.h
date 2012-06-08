@@ -29,6 +29,7 @@ public:
    void GenerateCameraRay(const CameraSample &sample, Ray *) const;
     void runLensFlare(const Scene * scene, const Renderer * renderer) const;
 private:
+    float apertureDiameter;
    float ShutterOpen;
    float ShutterClose;
    float filmDiag;

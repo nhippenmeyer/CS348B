@@ -74,8 +74,9 @@ RealisticCamera::RealisticCamera(const AnimatedTransform &cam2world,
     filmDistance = filmdistance;
     //parse the specfile 
     string fn = AbsolutePath(ResolveFilename(specfile));
+    apertureDiameter = aperture_diameter_;
 
-
+    cout << "\n\napertureDiameter: " << apertureDiameter << "\n\n";
     vector<float> vals;
 
     //check to see if there is valid input in the lens file.
@@ -343,11 +344,13 @@ float RealisticCamera::GenerateRay(const CameraSample &sample, Ray *ray) const
 
         if (lensRadius ==0)
         {
-            
+            //cout << "\n\n0 radius!:\n\n";  
             float tAperture = (lensDistance - ray->o.z)/(ray->d.z);
             float xAperture = ray->o.x + ray->d.x * tAperture;
             float yAperture = ray->o.y + ray->d.y * tAperture;
-            if (xAperture * xAperture + yAperture + yAperture > currentAperture * .5)
+            currentAperture = apertureDiameter;
+            //cout << "\n\ncurrentAperture: " << currentAperture << "\n\n";
+            if (xAperture * xAperture + yAperture * yAperture > (currentAperture * .5 * currentAperture* .5))
                 return 0.f;            
             
             //intersected = true;
