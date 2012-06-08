@@ -115,14 +115,14 @@ bool LightField::writeToFile()
     fwrite((void*)(&uvPlane->yRes), sizeof(uvPlane->yRes), 1, lightfieldBin);
 
     //write ST plane properties
-    fwrite((void*)(&stPlane[0]->z), sizeof(stPlane[0]->z), 1, lightfieldBin);
-    fwrite((void*)(&stPlane[0]->width), sizeof(stPlane[0]->width), 1, lightfieldBin);
-    fwrite((void*)(&stPlane[0]->height), sizeof(stPlane[0]->height), 1, lightfieldBin);
-    fwrite((void*)(&stPlane[0]->xRes), sizeof(stPlane[0]->xRes), 1, lightfieldBin);
-    fwrite((void*)(&stPlane[0]->yRes), sizeof(stPlane[0]->yRes), 1, lightfieldBin);
+    fwrite((void*)(&stPlanes[0]->z), sizeof(stPlanes[0]->z), 1, lightfieldBin);
+    fwrite((void*)(&stPlanes[0]->width), sizeof(stPlanes[0]->width), 1, lightfieldBin);
+    fwrite((void*)(&stPlanes[0]->height), sizeof(stPlanes[0]->height), 1, lightfieldBin);
+    fwrite((void*)(&stPlanes[0]->xRes), sizeof(stPlanes[0]->xRes), 1, lightfieldBin);
+    fwrite((void*)(&stPlanes[0]->yRes), sizeof(stPlanes[0]->yRes), 1, lightfieldBin);
 
     //go through all st planes in raster order, then write these out to file
-    for (int i = 0; i < (UVPlane->xRes)*(UVPlane->yRes); i++)
+    for (int i = 0; i < (uvPlane->xRes)*(uvPlane->yRes); i++)
     {
         STPlane *stPlane = stPlanes[i];
         for (int ii = 0; ii < (stPlane->xRes); ii++)
