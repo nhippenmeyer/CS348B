@@ -52,6 +52,7 @@ public:
     const float shutterOpen, shutterClose;
     Film *film;
 	LightField* lightfield;
+    bool preprocess;   //Andy added: specifies whether this is preprocess or post process
 
 };
 

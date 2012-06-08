@@ -286,30 +286,42 @@ void SamplerRenderer::Render(const Scene *scene) {
     nTasks = RoundUpPow2(nTasks);
     ProgressReporter reporter(nTasks, "Rendering");
 
-    vector<Task *> preprocessTasks;
-    for (int i = 0; i < nTasks; ++i)
-        preprocessTasks.push_back(new SamplerRendererTask(scene, this, camera,
-                                                      	  reporter, sampler, sample, 
-                                                      	  visualizeObjectIds, 
-                                                      	  nTasks-1-i, nTasks, true));
-    EnqueueTasks(preprocessTasks);
-    WaitForAllTasks();
-    for (uint32_t i = 0; i < preprocessTasks.size(); ++i)
-        delete preprocessTasks[i];
+    //-----------preprocessing - comment this section out if only rendering
+    if (camera->preprocess)
+    {
+        vector<Task *> preprocessTasks;
+        for (int i = 0; i < nTasks; ++i)
+            preprocessTasks.push_back(new SamplerRendererTask(scene, this, camera,
+                                                          	  reporter, sampler, sample, 
+                                                          	  visualizeObjectIds, 
+                                                          	  nTasks-1-i, nTasks, true));
+        EnqueueTasks(preprocessTasks);
+       
+        WaitForAllTasks();
+        for (uint32_t i = 0; i < preprocessTasks.size(); ++i)
+            delete preprocessTasks[i];
 
-	vector<Task *> renderTasks;
-    for (int i = 0; i < nTasks; ++i)
-        renderTasks.push_back(new SamplerRendererTask(scene, this, camera,
-                                                      reporter, sampler, sample, 
-                                                      visualizeObjectIds, 
-                                                      nTasks-1-i, nTasks, false));
-    EnqueueTasks(renderTasks);
-    WaitForAllTasks();
-    reporter.Done();
+        camera->lightfield->writeToFile();  //writes lightfield to file 
+        // -------------------------------------
+    }
+    else
+    {
+        //----------post process--------------------
+        camera->lightfield->loadFromFile(); //reads lightfield from file
+	    vector<Task *> renderTasks;
+        for (int i = 0; i < nTasks; ++i)
+            renderTasks.push_back(new SamplerRendererTask(scene, this, camera,
+                                                          reporter, sampler, sample, 
+                                                          visualizeObjectIds, 
+                                                          nTasks-1-i, nTasks, false));
+        EnqueueTasks(renderTasks);
+        WaitForAllTasks();
+        reporter.Done();
 
-    for (uint32_t i = 0; i < renderTasks.size(); ++i)
-        delete renderTasks[i];
-
+        for (uint32_t i = 0; i < renderTasks.size(); ++i)
+            delete renderTasks[i];
+        //end post process
+    }
     PBRT_FINISHED_RENDERING();
     // Clean up after rendering and store final image
     delete sample;
