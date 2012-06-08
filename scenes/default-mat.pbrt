@@ -1,0 +1,89 @@
+	# Material 'Foregrou.001'
+MakeNamedMaterial "Foregrou.001"
+   "string type" ["uber"]
+   "color Kd" [0.000000 0.000000 0.000000]
+   "color Ks" [0.047366 0.047366 0.047366]
+   "color Kr" [0.000000 0.000000 0.000000] "float roughness" [0.002000]
+
+	# Material 'FrontCol'
+MakeNamedMaterial "FrontCol"
+   "string type" ["uber"]
+   "color Kd" [0.612066 0.612066 0.612066]
+   "color Ks" [0.047366 0.047366 0.047366]
+   "color Kr" [0.000000 0.000000 0.000000] "float roughness" [0.002000]
+
+	# Material 'Color_00'
+MakeNamedMaterial "Color_00"
+   "string type" ["uber"]
+   "color Kd" [0.023548 0.023548 0.023548]
+   "color Ks" [0.047366 0.047366 0.047366]
+   "color Kr" [0.000000 0.000000 0.000000] "float roughness" [0.002000]
+
+	# Material 'Transluc'
+Texture "Transluc::Kd" "color" "imagemap"
+   "string wrap" ["repeat"]
+   "string filename" ["Transluc.tga"]
+   "float gamma" [2.200000]
+   "float scale" [1.000000]
+   "string mapping" ["uv"]
+   "float uscale" [1.000000]
+   "float vscale" [-1.000000]
+   "float udelta" [0.000000]
+   "float vdelta" [-0.000000]
+Texture "Transluc::Kd.scale" "color" "scale" "texture tex1" ["Transluc::Kd"] "color tex2" [0.800000 0.800000 0.800000]
+MakeNamedMaterial "Transluc"
+   "string type" ["translucent"]
+   "color reflect" [.05 .05 .05]
+    "color transmit" [.95 .95 .95]
+    "float roughness" 0
+
+
+
+# Material 'Wood_Bam'
+Texture "Wood_Bam::Kd" "color" "imagemap"
+   "string wrap" ["repeat"]
+   "string filename" ["Wood_Bam.tga"]
+   "float gamma" [2.200000]
+   "float scale" [1.000000]
+   "string mapping" ["uv"]
+   "float uscale" [1.000000]
+   "float vscale" [-1.000000]
+   "float udelta" [0.000000]
+   "float vdelta" [-0.000000]
+Texture "Wood_Bam::Kd.scale" "color" "scale" "texture tex1" ["Wood_Bam::Kd"] "color tex2" [0.800000 0.800000 0.800000]
+MakeNamedMaterial "Wood_Bam"
+   "string type" ["uber"] "texture Kd" ["Wood_Bam::Kd.scale"]
+   "color Ks" [0.047366 0.047366 0.047366]
+   "color Kr" [0.000000 0.000000 0.000000] "float roughness" [0.002000]
+
+	# Material 'Foregrou'
+MakeNamedMaterial "Foregrou"
+   "string type" ["uber"]
+   "color Kd" [0.000000 0.000000 0.000000]
+   "color Ks" [0.047366 0.047366 0.047366]
+   "color Kr" [0.000000 0.000000 0.000000] "float roughness" [0.002000]
+
+	# Material 'Metal_Se'
+Texture "Metal_Se::Kd" "color" "imagemap"
+   "string wrap" ["repeat"]
+   "string filename" ["Metal_Se.tga"]
+   "float gamma" [2.200000]
+   "float scale" [1.000000]
+   "string mapping" ["uv"]
+   "float uscale" [1.000000]
+   "float vscale" [-1.000000]
+   "float udelta" [0.000000]
+   "float vdelta" [-0.000000]
+Texture "Metal_Se::Kd.scale" "color" "scale" "texture tex1" ["Metal_Se::Kd"] "color tex2" [0.800000 0.800000 0.800000]
+MakeNamedMaterial "Metal_Se"
+   "string type" ["uber"] "texture Kd" ["Metal_Se::Kd.scale"]
+   "color Ks" [0.047366 0.047366 0.047366]
+   "color Kr" [0.000000 0.000000 0.000000] "float roughness" [0.002000]
+
+	# Material 'Material'
+MakeNamedMaterial "Material"
+   "string type" ["uber"]
+   "color Kd" [0.374624 0.374624 0.374624]
+   "color Ks" [0.047366 0.047366 0.047366]
+   "color Kr" [0.000000 0.000000 0.000000] "float roughness" [0.002000]
+

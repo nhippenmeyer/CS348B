@@ -1,0 +1,90 @@
+# pbrt v2.0 Scene File
+# Exported by pbrtBlend Blender Exporter
+
+Scale -1 1 1  # account for fixed lookat bug...
+LookAt 22.273041 -20.802139 7.564090 
+       21.546844 -20.118723 7.489386 
+       -0.046965 0.059093 0.997147
+
+Camera "perspective"
+   "float fov" [40]
+
+
+Film "image"
+   "integer xresolution" [800] 
+   "integer yresolution" [600]
+   "string filename" ["test.exr"]
+
+PixelFilter "mitchell"
+   "float B" [0.750000]
+   "float C" [0.125000]
+
+Sampler "lowdiscrepancy"
+   "integer pixelsamples" [4]
+
+SurfaceIntegrator "directlighting"
+   "integer maxdepth" [8]
+
+VolumeIntegrator "single"
+   "float stepsize" [1.000000]
+
+Renderer "sample"
+
+WorldBegin
+
+AttributeBegin
+	
+AttributeBegin
+Rotate 330 0 0 1
+Rotate 4 0 1 0 
+LightSource "infinite" "integer nsamples" [4]
+    "color scale" [5 3 3]
+"string mapname" ["sunset.exr"  ]
+	#"string mapname" ["RenoSuburb01_sm.exr"  ]
+AttributeEnd
+
+
+AttributeBegin
+  AreaLightSource "area" "color L" [9600000 5600000 2860000] "integer nsamples" [8]
+  # use camera coordinate system (optional)
+  CoordSysTransform "camera"
+  # adjust light source position
+  Translate -110 125 500
+  #Rotate -90 0 1 0
+  #define the shape of the arealight to be a disk with radius 1.5
+  Shape "sphere" "float radius" [.15] 
+AttributeEnd
+
+
+AttributeBegin
+  AreaLightSource "area" "color L" [27500 21000 14300] "integer nsamples" [8]
+  # use camera coordinate system (optional)
+  CoordSysTransform "camera"
+  # adjust light source position
+  Translate 10.75 17 58.5
+  #Rotate -90 0 1 0
+  #define the shape of the arealight to be a disk with radius 1.5
+  Shape "sphere" "float radius" [.4] 
+AttributeEnd
+
+AttributeBegin
+  AreaLightSource "area" "color L" [27500 21000 14300] "integer nsamples" [8]
+  # use camera coordinate system (optional)
+  CoordSysTransform "camera"
+  # adjust light source position
+  Translate 10.75 17 59.5
+  #Rotate -90 0 1 0
+  #define the shape of the arealight to be a disk with radius 1.5
+  Shape "sphere" "float radius" [.1] 
+AttributeEnd
+
+
+Include "default-mat.pbrt"
+
+Include "default-geom.pbrt"
+
+Include "default-vol.pbrt"
+
+WorldEnd
+
+
