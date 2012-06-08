@@ -55,8 +55,8 @@ static uint32_t hash(char *key, uint32_t len)
 } 
 
 void SamplerRendererTask::Run() {
-	
-	if (preprocess) Preprocess();
+
+	if (camera->preprocess) Preprocess();
 	else Render();
 }
 
@@ -148,7 +148,7 @@ void SamplerRendererTask::Preprocess() {
 			rgb[0] = Ls[i].GetCoeff(0);
 			rgb[1] = Ls[i].GetCoeff(1);
 			rgb[2] = Ls[i].GetCoeff(2);
-			// cout << "Adding rgb: (" << rgb[0] << ", " << rgb[1] << ", " << rgb[2] << ")" << endl;
+			//cout << "Adding rgb: (" << rgb[0] << ", " << rgb[1] << ", " << rgb[2] << ")" << endl;
 			camera->lightfield->AddRayToField(*cameraRay, rgb);
         }
 
@@ -200,12 +200,6 @@ void SamplerRendererTask::Render() {
 	
         // Generate camera rays and compute radiance along rays
         for (int i = 0; i < sampleCount; ++i) {
-	
-            // Find camera ray for _sample[i]_
-            PBRT_STARTED_GENERATING_CAMERA_RAY(&samples[i]);
-			float rayWeight = camera->GenerateRayDifferential(samples[i], &rays[i]);
-            rays[i].ScaleDifferentials(1.f / sqrtf(sampler->samplesPerPixel));
-            PBRT_FINISHED_GENERATING_CAMERA_RAY(&samples[i], &rays[i], rayWeight);
 
 			Ray* cameraRay = new Ray();
 			camera->GenerateCameraRay(samples[i], cameraRay);
@@ -213,7 +207,7 @@ void SamplerRendererTask::Render() {
 			float* rgb = new float[3];
 			if (!camera->lightfield->Intersect(*cameraRay, rgb)) 
 				rgb[0] = rgb[1] = rgb[2] = 0.f;
-			// cout << "rgb: (" << rgb[0] << ", " << rgb[1] << ", " << rgb[2] << ")" << endl;
+			//cout << "rgb: (" << rgb[0] << ", " << rgb[1] << ", " << rgb[2] << ")" << endl;
             Ls[i] = Spectrum::FromRGB(rgb);
             Ls[i] /= 255.f;
         }
