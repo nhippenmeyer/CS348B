@@ -2,3 +2,4 @@ bin/*
 objs/*
 *.exr
 *.tiff
+cameras/realistic.*
