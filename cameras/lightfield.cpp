@@ -69,9 +69,9 @@ bool LightField::Intersect(Ray& ray, float* rgb) {
 		int stCoords[2];
 		STPlane *stPlane = stPlanes[uvCoords[0] + uvPlane->xRes*uvCoords[1]];
 		if (stPlane->Intersect(ray, stCoords)) {
-			rgb[0] = stPlane->r[stCoords[0]][stCoords[1]];
-			rgb[1] = stPlane->g[stCoords[0]][stCoords[1]];
-			rgb[2] = stPlane->b[stCoords[0]][stCoords[1]];
+			rgb[0] = stPlane->r[stCoords[0]][stCoords[1]] * 5;
+			rgb[1] = stPlane->g[stCoords[0]][stCoords[1]] * 5;
+			rgb[2] = stPlane->b[stCoords[0]][stCoords[1]] * 5;
 			return true;
 		}
 	}
@@ -85,9 +85,9 @@ void LightField::AddRayToField(Ray& ray, float* rgb) {
 		int stCoords[2];
 		STPlane *stPlane = stPlanes[uvCoords[0] + uvPlane->xRes*uvCoords[1]];
 		if (stPlane->Intersect(ray, stCoords)) {
-			stPlane->r[stCoords[0]][stCoords[1]] += rgb[0];
-			stPlane->g[stCoords[0]][stCoords[1]] += rgb[1];
-			stPlane->b[stCoords[0]][stCoords[1]] += rgb[2];
+			stPlane->r[stCoords[0]][stCoords[1]] = rgb[0];
+			stPlane->g[stCoords[0]][stCoords[1]] = rgb[1];
+			stPlane->b[stCoords[0]][stCoords[1]] = rgb[2];
 		}
 	}
 }

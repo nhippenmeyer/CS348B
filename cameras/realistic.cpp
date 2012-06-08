@@ -198,8 +198,8 @@ RealisticCamera::RealisticCamera(const AnimatedTransform &cam2world,
 	float widthClose = scale*film->xResolution;
 	float heightClose = scale*film->yResolution;
 	
-	lightfield = new LightField(filmZ, widthClose, heightClose, 64, 64,
-								backLensZ, backLensAperture, backLensAperture, 64, 64);
+	lightfield = new LightField(filmZ, widthClose, heightClose, 256, 256,
+								backLensZ, backLensAperture, backLensAperture, 1, 1);
 }
 
 
