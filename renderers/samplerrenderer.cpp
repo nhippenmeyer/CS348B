@@ -128,30 +128,30 @@ void SamplerRendererTask::Preprocess() {
 
 			// Issue warning if unexpected radiance value returned
             if (Ls[i].HasNaNs()) {
-                Error("Not-a-number radiance value returned "
-                      "for image sample.  Setting to black.");
+                //Error("Not-a-number radiance value returned "
+                //      "for image sample.  Setting to black.");
                 Ls[i] = Spectrum(0.f);
             }
             else if (Ls[i].y() < -1e-5) {
-                Error("Negative luminance value, %f, returned"
-                      "for image sample.  Setting to black.", Ls[i].y());
+                //Error("Negative luminance value, %f, returned"
+                //      "for image sample.  Setting to black.", Ls[i].y());
                 Ls[i] = Spectrum(0.f);
             }
             else if (isinf(Ls[i].y())) {
-                Error("Infinite luminance value returned"
-                      "for image sample.  Setting to black.");
+                //Error("Infinite luminance value returned"
+                //      "for image sample.  Setting to black.");
                 Ls[i] = Spectrum(0.f);
             }
             PBRT_FINISHED_CAMERA_RAY_INTEGRATION(&rays[i], &samples[i], &Ls[i]);
 
-			float rgb[3];
+			float *rgb = new float[3];
 			rgb[0] = Ls[i].GetCoeff(0);
 			rgb[1] = Ls[i].GetCoeff(1);
 			rgb[2] = Ls[i].GetCoeff(2);
 			//cout << "Adding rgb: (" << rgb[0] << ", " << rgb[1] << ", " << rgb[2] << ")" << endl;
 			camera->lightfield->AddRayToField(*cameraRay, rgb);
-			
-			delete cameraRay;
+            delete[] rgb;
+            delete cameraRay;
         }
 
         // Free _MemoryArena_ memory from computing image sample values
@@ -212,7 +212,8 @@ void SamplerRendererTask::Render() {
 			//cout << "rgb: (" << rgb[0] << ", " << rgb[1] << ", " << rgb[2] << ")" << endl;
             Ls[i] = Spectrum::FromRGB(rgb);
             Ls[i] /= 255.f;
-			delete rgb;
+            delete[] rgb;
+            delete cameraRay;  //added to get rid of memory leak
         }
 			
 		// Report sample results to _Sampler_, add contributions to image

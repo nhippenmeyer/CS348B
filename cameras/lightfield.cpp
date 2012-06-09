@@ -87,9 +87,9 @@ bool LightField::Intersect(Ray& ray, float* rgb) {
 				}
 			}
 		}
-		rgb[0] = stPlane->r[stCoords[0]][stCoords[1]] * 1000/count;
-		rgb[1] = stPlane->g[stCoords[0]][stCoords[1]] * 1000/count;
-		rgb[2] = stPlane->b[stCoords[0]][stCoords[1]] * 1000/count;
+		rgb[0] *= (1000/count);
+		rgb[1] *= (1000/count);
+		rgb[2] *= (1000/count);
 		return true;
 	}
 	return false;
