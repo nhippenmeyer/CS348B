@@ -1,0 +1,55 @@
+# pbrt v2.0 Scene File
+# Exported by pbrtBlend Blender Exporter
+
+Scale -1 1 1  # account for fixed lookat bug...
+LookAt 179.701691 -170.845230 36.446182 
+       178.975494 -170.161819 36.371479 
+       -0.046965 0.059093 0.997147
+
+#Camera "perspective"
+#   "float fov" [40]
+#   "float lensradius" 5
+#    "float focaldistance" 300
+
+Camera "realistic" 
+    "float preprocess" 0
+	"string specfile" "dgauss.50mm.dat" 
+	#"float filmdistance" 36.77   
+    #40 (at infinity) 45 (at back bench) 62 (front bench)
+    "float filmdistance" 48
+	"float aperture_diameter" 8.1
+	"float filmdiag" 70 
+	"float hither" [0.001 ] 
+	"float yon" [1e+30 ] 
+	"float shutteropen" [0 ] 
+	"float shutterclose" [0 ]
+
+
+
+Film "image"
+   "integer xresolution" [512] 
+   "integer yresolution" [512]
+   "string filename" ["testBiggerLFLarge.exr"]
+
+PixelFilter "mitchell"
+   "float B" [0.750000]
+   "float C" [0.125000]
+
+Sampler "lowdiscrepancy"
+   "integer pixelsamples" [1024]
+
+SurfaceIntegrator "directlighting"
+   "integer maxdepth" [8]
+
+#VolumeIntegrator "single"
+#   "float stepsize" [1.000000]
+
+Renderer "sample"
+
+WorldBegin
+
+
+
+WorldEnd
+
+
