@@ -69,9 +69,23 @@ bool LightField::Intersect(Ray& ray, float* rgb) {
 		int stCoords[2];
 		STPlane *stPlane = stPlanes[uvCoords[0] + uvPlane->xRes*uvCoords[1]];
 		if (stPlane->Intersect(ray, stCoords)) {
-			rgb[0] = stPlane->r[stCoords[0]][stCoords[1]] * 5;
-			rgb[1] = stPlane->g[stCoords[0]][stCoords[1]] * 5;
-			rgb[2] = stPlane->b[stCoords[0]][stCoords[1]] * 5;
+			rgb[0] = rgb[1] = rgb[2] = 0;
+			int count = 0;
+			for (int i = -3; i <= 3; i++) {
+				for (int j = -3; j <= 3; j++) {
+					int x = stCoords[0] + i;
+					int y = stCoords[1] + j;
+					if (x >= 0 && x < stPlane->xRes && y >= 0 && y < stPlane->yRes) {
+						rgb[0] += stPlane->r[x][y];
+						rgb[1] += stPlane->g[x][y];
+						rgb[2] += stPlane->b[x][y];
+						count++;
+					}
+				}
+			}
+			rgb[0] = stPlane->r[stCoords[0]][stCoords[1]] * 1000/count;
+			rgb[1] = stPlane->g[stCoords[0]][stCoords[1]] * 1000/count;
+			rgb[2] = stPlane->b[stCoords[0]][stCoords[1]] * 1000/count;
 			return true;
 		}
 	}

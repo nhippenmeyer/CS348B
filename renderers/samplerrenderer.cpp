@@ -150,6 +150,8 @@ void SamplerRendererTask::Preprocess() {
 			rgb[2] = Ls[i].GetCoeff(2);
 			//cout << "Adding rgb: (" << rgb[0] << ", " << rgb[1] << ", " << rgb[2] << ")" << endl;
 			camera->lightfield->AddRayToField(*cameraRay, rgb);
+			
+			delete cameraRay;
         }
 
         // Free _MemoryArena_ memory from computing image sample values
@@ -210,6 +212,7 @@ void SamplerRendererTask::Render() {
 			//cout << "rgb: (" << rgb[0] << ", " << rgb[1] << ", " << rgb[2] << ")" << endl;
             Ls[i] = Spectrum::FromRGB(rgb);
             Ls[i] /= 255.f;
+			delete rgb;
         }
 			
 		// Report sample results to _Sampler_, add contributions to image
