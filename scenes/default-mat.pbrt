@@ -22,7 +22,7 @@ MakeNamedMaterial "Color_00"
 	# Material 'Transluc'
 Texture "Transluc::Kd" "color" "imagemap"
    "string wrap" ["repeat"]
-   "string filename" ["Transluc.tga"]
+   "string filename" ["ransluc.tga"]
    "float gamma" [2.200000]
    "float scale" [1.000000]
    "string mapping" ["uv"]
@@ -32,10 +32,10 @@ Texture "Transluc::Kd" "color" "imagemap"
    "float vdelta" [-0.000000]
 Texture "Transluc::Kd.scale" "color" "scale" "texture tex1" ["Transluc::Kd"] "color tex2" [0.800000 0.800000 0.800000]
 MakeNamedMaterial "Transluc"
-   "string type" ["translucent"]
-   "color reflect" [.05 .05 .05]
-    "color transmit" [.95 .95 .95]
-    "float roughness" 0
+   "string type" ["uber"] "texture Kd" ["Transluc::Kd.scale"]
+   "color Ks" [0.047366 0.047366 0.047366]
+   "color Kr" [0.000000 0.000000 0.000000] "float roughness" [0.002000]
+
 
 
 
