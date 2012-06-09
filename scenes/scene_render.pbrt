@@ -23,61 +23,9 @@ Film "image"
    "string filename" ["scene.exr"]
 
 Sampler "lowdiscrepancy"
-   "integer pixelsamples" [64]
+   "integer pixelsamples" [512]
 
 WorldBegin
-
-AttributeBegin
-	
-AttributeBegin
-Rotate 330 0 0 1
-Rotate 4 0 1 0 
-LightSource "infinite" "integer nsamples" [16]
-    "color scale" [5 3 3]
-		"string mapname" ["sunset.exr"  ]
-AttributeEnd
-
-
-AttributeBegin
-  AreaLightSource "area" "color L" [9600000 5600000 2860000] "integer nsamples" [16]
-  # use camera coordinate system (optional)
-  CoordSysTransform "camera"
-  # adjust light source position
-  Translate -110 125 500
-  #Rotate -90 0 1 0
-  #define the shape of the arealight to be a disk with radius 1.5
-  Shape "sphere" "float radius" [.15] 
-AttributeEnd
-
-
-AttributeBegin
-  AreaLightSource "area" "color L" [27500 21000 14300] "integer nsamples" [16]
-  # use camera coordinate system (optional)
-  CoordSysTransform "camera"
-  # adjust light source position
-  Translate 10.75 17 58.5
-  #Rotate -90 0 1 0
-  #define the shape of the arealight to be a disk with radius 1.5
-  Shape "sphere" "float radius" [.4] 
-AttributeEnd
-
-AttributeBegin
-  AreaLightSource "area" "color L" [27500 21000 14300] "integer nsamples" [16]
-  # use camera coordinate system (optional)
-  CoordSysTransform "camera"
-  # adjust light source position
-  Translate 10.75 17 59.5
-  #Rotate -90 0 1 0
-  #define the shape of the arealight to be a disk with radius 1.5
-  Shape "sphere" "float radius" [.1] 
-AttributeEnd
-
-
-Include "default-mat.pbrt"
-
-Include "default-geom.pbrt"
-
-Include "default-vol.pbrt"
 
 WorldEnd
 

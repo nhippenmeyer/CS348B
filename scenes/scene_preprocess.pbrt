@@ -24,7 +24,7 @@ Film "image"
    "string filename" ["testdgauss.exr"]
 
 Sampler "lowdiscrepancy"
-   "integer pixelsamples" [64]
+   "integer pixelsamples" [1024]
 
 WorldBegin
 

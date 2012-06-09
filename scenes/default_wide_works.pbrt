@@ -3,58 +3,14 @@
 
 Scale -1 1 1  # account for fixed lookat bug...
 
-
-#LookAt 9.600891 -8.876518 6.260509 
-#       8.874694 -8.193103 6.185805 
-#       -0.046965 0.059093 0.997147
-
-
-#LookAt 37.140427 -34.793663 9.093495 
-#       36.414230 -34.110249 9.018791 
-#       -0.046965 0.059093 0.997147
-
-#LookAt 22.273041 -20.802139 7.564090 
-#       21.546844 -20.118723 7.489386 
-#       -0.046965 0.059093 0.997147
-
 LookAt 27.106195 -25.350563 8.061275 
        26.379999 -24.667147 7.986572 
        -0.046965 0.059093 0.997147
 
-#LookAt 73.039063 -68.577461 12.786383 
-#       72.312866 -67.894043 12.711679 
-#       -0.046965 0.059093 0.997147
-
-#Camera "perspective"
-#   "float fov" [40]
 Camera "realistic" 
-
-#	"string specfile" "telephoto.250mm.dat" 
-#	"float filmdistance" 123.74390
-#	"float aperture_diameter" 20.25
-#	"float filmdiag" 70 
-#	"float hither" [0.001 ] 
-#	"float yon" [1e+30 ] 
-#	"float shutteropen" [0 ] 
-#	"float shutterclose" [0 ]
-
-
-    #"float preprocess" 1
-#	"string specfile" "wide.22mm.dat" 
-#"string specfile" "dgauss.50mm.dat" 
-#	"float filmdistance" 39
-#	"float aperture_diameter" 17.1
-#	"float filmdiag" 90 
-#	"float hither" [0.001 ] 
-#	"float yon" [1e+30 ] 
-#	"float shutteropen" [0 ] 
-#	"float shutterclose" [0 ]
- 
 	"string specfile" "wide.22mm.dat" 
-	#"float filmdistance" 14.54
-"float filmdistance" 30
-	#"float aperture_diameter" 8.756
-"float aperture_diameter" 2
+	"float filmdistance" 30
+	"float aperture_diameter" 2
 	"float filmdiag" 40 
 	"float hither" [0.001 ] 
 	"float yon" [1e+30 ] 
@@ -62,24 +18,12 @@ Camera "realistic"
 	"float shutterclose" [0 ]   
 
 Film "image"
-   "integer xresolution" [256] 
-   "integer yresolution" [256]
+   "integer xresolution" [512] 
+   "integer yresolution" [512]
    "string filename" ["testdgauss.exr"]
-
-#PixelFilter "mitchell"
-#   "float B" [0.750000]
-#   "float C" [0.125000]
 
 Sampler "lowdiscrepancy"
    "integer pixelsamples" [256]
-
-#SurfaceIntegrator "directlighting"
-#   "integer maxdepth" [8]
-
-#VolumeIntegrator "single"
-#   "float stepsize" [1.000000]
-
-#Renderer "sample"
 
 WorldBegin
 
@@ -90,8 +34,7 @@ Rotate 330 0 0 1
 Rotate 4 0 1 0 
 LightSource "infinite" "integer nsamples" [16]
     "color scale" [5 3 3]
-"string mapname" ["sunset.exr"  ]
-	#"string mapname" ["RenoSuburb01_sm.exr"  ]
+		"string mapname" ["sunset.exr"  ]
 AttributeEnd
 
 
