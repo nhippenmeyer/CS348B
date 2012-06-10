@@ -87,9 +87,12 @@ bool LightField::Intersect(Ray& ray, float* rgb) {
 				}
 			}
 		}
-		rgb[0] *= (1000/count);
-		rgb[1] *= (1000/count);
-		rgb[2] *= (1000/count);
+		rgb[0] *= 1000;
+		rgb[1] *= 1000;
+		rgb[2] *= 1000;
+		rgb[0] /= count;
+		rgb[1] /= count;
+		rgb[2] /= count;
 		return true;
 	}
 	return false;

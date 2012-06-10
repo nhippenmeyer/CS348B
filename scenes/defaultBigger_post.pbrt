@@ -36,7 +36,7 @@ PixelFilter "mitchell"
    "float C" [0.125000]
 
 Sampler "lowdiscrepancy"
-   "integer pixelsamples" [1024]
+   "integer pixelsamples" [128]
 
 SurfaceIntegrator "directlighting"
    "integer maxdepth" [8]
