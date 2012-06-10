@@ -116,7 +116,9 @@ RealisticCamera::RealisticCamera(const AnimatedTransform &cam2world,
     float width = filmDiag /sqrt((1.f + aspectRatio * aspectRatio));
     float height = width/aspectRatio;
     float backLensAperture = lensEls[lensEls.size()-1].radius * 2;  //this is the diameter
-    lightfield = new LightField(-filmDistance, width, height, 256, 256, 0, backLensAperture, backLensAperture, 32, 32);
+    //lightfield = new LightField(-filmDistance, width, height, 256, 256, 0, backLensAperture, backLensAperture, 32, 32);
+
+    lightfield = new LightField(-filmDistance, width, height, 512, 512, 0, backLensAperture, backLensAperture, 32, 32);
 }
 
 

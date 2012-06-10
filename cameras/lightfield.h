@@ -16,7 +16,7 @@ public:
 class STPlane : public Plane {
 public:
 	STPlane(float z, float width, float height, int xRes, int yRes);
-	float **r, **g, **b;
+	short **r, **g, **b;
 };
 
 class LightField {
