@@ -39,13 +39,13 @@ UVPlane::UVPlane(float z, float width, float height, int xRes, int yRes) : Plane
 
 STPlane::STPlane(float z, float width, float height, int xRes, int yRes) : Plane(z, width, height, xRes, yRes) {
 	
-	r = new float*[xRes];
-	g = new float*[xRes];
-	b = new float*[xRes];
+	r = new short*[xRes];
+	g = new short*[xRes];
+	b = new short*[xRes];
 	for (int i = 0; i < xRes; i++) {
-		r[i] = new float[yRes];
-		g[i] = new float[yRes];
-		b[i] = new float[yRes];
+		r[i] = new short[yRes];
+		g[i] = new short[yRes];
+		b[i] = new short[yRes];
 		for (int j = 0; j < yRes; j++) {
 			r[i][j] = g[i][j] = b[i][j] = 0.f;
 		}
@@ -77,17 +77,14 @@ bool LightField::Intersect(Ray& ray, float* rgb) {
 					STPlane *stPlane = stPlanes[ind];
 					int stCoords[2];
 					if (stPlane->Intersect(ray, stCoords)) {
-						rgb[0] += stPlane->r[stCoords[0]][stCoords[1]];
-						rgb[1] += stPlane->g[stCoords[0]][stCoords[1]];
-						rgb[2] += stPlane->b[stCoords[0]][stCoords[1]];
+						rgb[0] += (float)stPlane->r[stCoords[0]][stCoords[1]];
+						rgb[1] += (float)stPlane->g[stCoords[0]][stCoords[1]];
+						rgb[2] += (float)stPlane->b[stCoords[0]][stCoords[1]];
 						count++;
 					}
 				}
 			}
 		}
-		rgb[0] *= 1000;
-		rgb[1] *= 1000;
-		rgb[2] *= 1000;
 		rgb[0] /= count;
 		rgb[1] /= count;
 		rgb[2] /= count;
@@ -103,9 +100,9 @@ void LightField::AddRayToField(Ray& ray, float* rgb) {
 		int stCoords[2];
 		STPlane *stPlane = stPlanes[uvCoords[0] + uvPlane->xRes*uvCoords[1]];
 		if (stPlane->Intersect(ray, stCoords)) {
-			stPlane->r[stCoords[0]][stCoords[1]] = rgb[0];
-			stPlane->g[stCoords[0]][stCoords[1]] = rgb[1];
-			stPlane->b[stCoords[0]][stCoords[1]] = rgb[2];
+			stPlane->r[stCoords[0]][stCoords[1]] = (short)(rgb[0] * 255);
+			stPlane->g[stCoords[0]][stCoords[1]] = (short)(rgb[1] * 255);
+			stPlane->b[stCoords[0]][stCoords[1]] = (short)(rgb[2] * 255);
 		}
 	}
 }
@@ -147,10 +144,13 @@ bool LightField::writeToFile()
         {
             for (int jj = 0; jj < (stPlane->yRes); jj++)
             {
-                short r = (short)(stPlane->r[ii][jj] * 255);
-				short g = (short)(stPlane->g[ii][jj] * 255);
-				short b = (short)(stPlane->b[ii][jj] * 255);
+                //short r = (short)(stPlane->r[ii][jj] * 255);
+				//short g = (short)(stPlane->g[ii][jj] * 255);
+				//short b = (short)(stPlane->b[ii][jj] * 255);
 
+                short r = (short)(stPlane->r[ii][jj] );
+				short g = (short)(stPlane->g[ii][jj] );
+				short b = (short)(stPlane->b[ii][jj] );
                 //write current stPlane rgb values to file
 	            fwrite((void*)(&r), sizeof(r), 1, lightfieldBin);
 				fwrite((void*)(&g), sizeof(g), 1, lightfieldBin);
@@ -203,9 +203,9 @@ bool LightField::loadFromFile()
 				fread((void*)(&g), sizeof(g), 1, lightfieldBin);
 				fread((void*)(&b), sizeof(b), 1, lightfieldBin);
 
-                stPlane->r[ii][jj] = r/255.0;
-                stPlane->g[ii][jj] = g/255.0;
-                stPlane->b[ii][jj] = b/255.0;
+                stPlane->r[ii][jj] = r;
+                stPlane->g[ii][jj] = g;
+                stPlane->b[ii][jj] = b;
             }
         }
     }
